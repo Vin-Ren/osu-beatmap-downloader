@@ -1,0 +1,28 @@
+"""
+
+Usage: python osu_api.py <Command> <Parameters>
+
+--Commands--
+Help		|| Shows this message.
+D|Download	|| download beatmaps
+
+--Options--
+-s|--since <date>				|| Pass since parameter to get_beatmaps
+						|| Date formats: YYYY-MM-DD, YYYY/MM/DD, DD-MM-YY, DD/MM/YY
+-m|--mode|--game-mode <gamemode>		|| Pass m parameter to get_beatmaps
+						|| Gamemode: 0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania
+-l|--limit <beatmap count limit default=500>	|| Pass limit parameter to get_beatmaps
+-a|-q|--approved|--qualification <qualification>|| Added beatmap filter for approved.
+						|| Qualifications: 4 = loved, 3 = qualified, 2 = approved, 1 = ranked, 0 = pending, -1 = WIP, -2 = graveyard
+						|| Qualifications can be stacked, example: "-a 41" would filter for loved & approved maps only.
+--diff|--difficulty|--difficulty-rating <rating>|| Added beatmap filter for difficultyrating. Rating will be converted to float.
+						|| Rating formats: [x.xx] or [x] and [x.xx-y.yy]
+						|| If given one rating, will only download beatmapset which has a diff rating x or x.xx
+						|| If given a range[x.xx-y.yy], will only download beatmapset which hass a diff rating inside the range.
+-f|--favourite <favourite_count>		|| Added beatmap filter for favourite_count.
+						|| Will only download beatmapsets with favourite_count higher than the given favourite_count.
+-r|--rating <rating>				|| Added beatmap filter for rating.
+						|| Only download beatmapsets with rating above the given rating.
+-d|--debug					|| Enable Debug
+-h|--help					|| Shows this message
+"""

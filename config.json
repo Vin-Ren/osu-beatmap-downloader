@@ -1,0 +1,10 @@
+{
+    "api-tokens": {
+        "api-name": "token",
+        "osu": "Get Your OSU API KEY from 'https://osu.ppy.sh/p/api'"
+    },
+    "osu-credentials": {
+        "username": "username",
+        "password": "password"
+    }
+}
