@@ -410,8 +410,6 @@ Please enter your choice.
 
 
 if __name__ == '__main__':
-	import pprint
-
 	if '-d' in sys.argv or '--debug' in sys.argv:
 		interface = Interface("config.json", debug=True)
 	else:
