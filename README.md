@@ -32,7 +32,7 @@ it's content should be like:
     }
 }
 ```
->**For examples, you can consider visiting these: [Config Sample](./config.sample.json) and [Config Schematics](./config.scematics.json).**
+>**For more detail, you can consider visiting these: [Config Sample](./config.sample.json) and [Config Schematics](./config.scematics.json).**
 
 Now you can insert the token you got from osu.ppy.sh/p/api into the `api-key > osu` field and insert your username and password into `credentials > osu > username` and `credentials > osu > password` respectively.
 
@@ -40,6 +40,7 @@ Now you can insert the token you got from osu.ppy.sh/p/api into the `api-key > o
 After configuring the project, You could finally start using it!
 The beatmap downloader can be used in CLI and Interactive mode.
 it will start in CLI mode **if** the interface detects argument, else it will start in Interactive mode.
+
 **NOTE: INTERACTIVE MODE IS NOT YET AVAILABLE IN THIS BRANCH**
 ### CLI
 Example:
