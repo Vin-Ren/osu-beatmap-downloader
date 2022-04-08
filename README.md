@@ -21,71 +21,48 @@ After you cloned this repository, you should have a file named config.json insid
 it's content should be like:
 ```json
 {
-    "api-tokens": {
-        "osu": "Get Your OSU API KEY from 'https://osu.ppy.sh/p/api'"
+    "api-key": {
+        "osu": "A Hexadecimal String Representing Your API KEY"
     },
-    "osu-credentials": {
-        "username": "username",
-        "password": "password"
+    "credentials": {
+        "osu": {
+            "username": "Your username",
+            "password": "Your password"
+        }
     }
 }
 ```
-Now you can insert the token you got from osu.ppy.sh/p/api into the `api-tokens > osu` field and insert your username and password into `osu-credentials > username` and `osu-credentials > password` respectively.
+>**For examples, you can consider visiting these: [Config Sample](./config.sample.json) and [Config Schematics](./config.scematics.json).**
+
+Now you can insert the token you got from osu.ppy.sh/p/api into the `api-key > osu` field and insert your username and password into `credentials > osu > username` and `credentials > osu > password` respectively.
 
 ## USAGE
 After configuring the project, You could finally start using it!
 The beatmap downloader can be used in CLI and Interactive mode.
 it will start in CLI mode **if** the interface detects argument, else it will start in Interactive mode.
-
+**NOTE: INTERACTIVE MODE IS NOT YET AVAILABLE IN THIS BRANCH**
 ### CLI
 Example:
 ```bash
-> python osu_api.py Download -s 2021-06-26 
+> python main.py Download -s 2021-06-26 
 .. #Downloads all beatmapsets since 2021 June 26 (limit 500)
 ```
-Or you can use my preset (you can change the preset itself too) by:
+Or you can use my preset (you can change the preset itself too) by: 
 ```bash
 > python preset.py 
 .. # Downloads as per preset
 ```
+**NOTE: PRESET IS NOT YET AVAILABLE IN THIS BRANCH**
 
 ### CLI Commands & Options
+Can be viewed with:
+```bash
+> python main.py --help
 ```
-USAGE: python osu_api.py <Command> [Parameters]
 
---Commands--
-Help		|| Shows this message.
-D|Download	|| download beatmaps
-
-
---Options--
--s|--since <date>                                 || Pass since parameter to get_beatmaps
-                                                  || Date formats: YYYY-MM-DD, YYYY/MM/DD, DD-MM-YY, DD/MM/YY
--m|--mode|--game-mode <gamemode>                  || Pass m parameter to get_beatmaps
-                                                  || Gamemode: 0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania
--l|--limit <beatmap count limit default=500>	  || Pass limit parameter to get_beatmaps
--a|-q|--approved|--qualification <qualification>  || Added beatmap filter for approved.
-                                                  || Qualifications: 4 = loved, 3 = qualified, 2 = approved, 1 = ranked, 0 = pending, -1 = WIP, -2 = graveyard
-                                                  || Qualifications can be stacked, example: "-a 41" would filter for loved & approved maps only.
---diff|--difficulty|--difficulty-rating <rating>  || Added beatmap filter for difficultyrating. Rating will be converted to float.
-                                                  || Rating formats: [x.xx] or [x] and [x.xx-y.yy]
-                                                  || If given one rating, will only download beatmapset which has a diff rating x or x.xx
-                                                  || If given a range[x.xx-y.yy], will only download beatmapset which hass a diff rating inside the range.
--f|--favourite <favourite_count>                  || Added beatmap filter for favourite_count.
-                                                  || Will only download beatmapsets with favourite_count higher than the given favourite_count.
--r|--rating <rating>                              || Added beatmap filter for rating.
-                                                  || Only download beatmapsets with rating above the given rating.
--d|--debug                                        || Enable Debug
--h|--help                                         || Shows this message
-```
 ## Development
-The code isn't really that organized, Its split into 2 files: 
- - [osu_api.py](./osu_api.py)
- -  [DBMan.py](./DBMan.py)
-
-[DBMan.py](./DBMan.py) is just a database manager, really.
-Most of the code is in [osu_api.py](./osu_api.py) it contains: `Api`, `Interface`, and utilities.
-You can see the code by yourself to see how it works.
+Please note that some functionality is not available yet as of now in this rewrite branch.
+This branch is essentially a rewrite compared to the main branch, as such the project has became a lot more robust. This project can now facilitate a lot more possible addons while staying organized.
 
 ---
 Thanks for reading.

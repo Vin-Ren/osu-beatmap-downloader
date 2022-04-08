@@ -1,0 +1,11 @@
+{
+    "api-key": {
+        "osu": "A Hexadecimal String Representing Your API KEY"
+    },
+    "credentials": {
+        "osu": {
+            "username": "Your username",
+            "password": "Your password"
+        }
+    }
+}

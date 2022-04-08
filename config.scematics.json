@@ -1,0 +1,10 @@
+{
+    "api-key": {
+        "api-name": "api-key"
+    },
+    "credentials": {
+        "app-name": {
+            "field-name": "field-value"
+        }
+    }
+}
