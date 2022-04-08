@@ -5,11 +5,12 @@ __pycache__/
 
 
 .idea/
+.vscode/
 test/
 testing/
-*.txt
-*.json
-*.sqlite3
+old/
+config.json
+*.db
 
 
 # C extensions
