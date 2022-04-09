@@ -106,7 +106,8 @@ class Interface:
             print("Recorded {} Beatmaps into the database.".format(len(beatmaps)))
         if self.config.lookup_beatmaps_in_database:
             beatmaps_in_db = self.db.get_all_beatmaps()
-            print("Found {} Beatmaps in database.".format(len(beatmaps_in_db)))
+            beatmaps+=beatmaps_in_db
+            print("Found {} Beatmaps in Database, For a Total of {} Beatmaps.".format(len(beatmaps_in_db), len(beatmaps)))
         
         filtered_beatmaps = [Beatmap(data) for data in self.filter_beatmaps(beatmaps)]
         beatmapsets = remove_duplicate_in_list(filtered_beatmaps, 'beatmapset_id', lambda e:e['beatmap_id'])
