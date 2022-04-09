@@ -22,6 +22,7 @@ class Interface:
         
         self.parsed_args = {}
         self.params = {}
+        self.download_params = {}
         self.filters = {}
     
     @property
@@ -48,6 +49,8 @@ class Interface:
                 self.config[key.split('_', 1)[-1]] = val
             elif key.startswith('params_'):
                 self.params[key.split('_', 1)[-1]] = val
+            elif key.startswith('download_params_'):
+                self.download_params[key.split('_params_', 1)[-1]] = val
             elif key.startswith('filters_'):
                 self.process_filter((key.split('_', 1)[-1],val))
 
@@ -72,10 +75,13 @@ class Interface:
         configs.add_argument('--lookup-in-database', action='store_true', dest='config_lookup_beatmaps_in_database', default=NULL, help="Whether to search for beatmaps to download from accumulated database.")
         configs.add_argument('-d', '--debug', dest='config_debug', default=NULL, action='store_true', help="Sets debug in printer. Default=False")
         
-        params = parser.add_argument_group('Download Params')
+        params = parser.add_argument_group('Get Beatmaps Params')
         params.add_argument('-s', '--since', metavar='DATETIME', dest='params_since', default=NULL, type=get_date_from_string, help="Add get beatmaps param since given date. Supported formats: YYYY-MM-DD, YYYY/MM/DD, DD-MM-YY, DD/MM/YY")
         params.add_argument('-m', '--mode', '--game-mode', metavar='MODE', dest='params_m', default=NULL, help="Add get beatmaps param for game mode. Modes: 0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania")
         params.add_argument('-l', '--limit', metavar='LIMIT', dest='params_limit', default=NULL, help="Adds limit to return beatmaps count. Default=500")
+        
+        download_params = parser.add_argument_group('Download Params')
+        download_params.add_argument('-nv', '--no-video', action='store_true', dest='download_params_noVideo', default=NULL, help="Whether to download beatmapset with video or not.")
         
         filters = parser.add_argument_group('Download Filters')
         filters.add_argument('-a', '-q', '--approved', '--qualification', metavar='QUALIFICATION', action='append', dest='filters_approved', default=NULL, help="Adds beatmaps filter to specified approved. To add multiple qualifications, stack it like: '-q 0 -q 1 ...'. Qualifications: 4 = loved, 3 = qualified, 2 = approved, 1 = ranked, 0 = pending, -1 = WIP, -2 = graveyard")
@@ -88,7 +94,7 @@ class Interface:
         self.process_args()
         
         self.printer.print_debug("Interface.start Process", 
-                                 {'Action': namespace.action, 'Params': self.params, 'Debug': self.config.debug, 
+                                 {'Action': namespace.action, 'Params': self.params, 'Download Params': self.download_params, 'Debug': self.config.debug, 
                                   'Namespace': namespace, 'Filter Conditions': self.filters},
                                  header_prefix='|>|')
         self.printer.debug = self.config.debug
@@ -122,7 +128,7 @@ class Interface:
                 print("Already downloaded, entry found in database.\n")
                 continue
             print("Downloading Beatmap...")
-            self.api.download_to_file(beatmap)
+            self.api.download_to_file(beatmap, params=self.download_params)
             print("Beatmap Downloaded.\n")
             self.db.flag_as_downloaded(beatmap)
         
