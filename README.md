@@ -56,9 +56,64 @@ Or you can use my preset (you can change the preset itself too) by:
 **NOTE: PRESET IS NOT YET AVAILABLE IN THIS BRANCH**
 
 ### CLI Commands & Options
-Can be viewed with:
 ```bash
 > python main.py --help
+usage: main.py [-h] [--download-directory DIRECTORY]
+               [--download-chunk-size CHUNK_SIZE] [--record-beatmaps]
+               [--lookup-in-database] [-d] [-s DATETIME] [-m MODE] [-l LIMIT]
+               [-nv] [-a QUALIFICATION] [--diff RATING] [-f FAVOURITE_COUNT]
+               [-r RATING]
+               [ACTION]
+
+This is the cli interface for osu-map-downloader.
+
+positional arguments:
+  ACTION                Action to do.
+
+options:
+  -h, --help            show this help message and exit
+
+Configurations:
+  --download-directory DIRECTORY
+                        Sets download directory for api. Default='./Downloads'
+  --download-chunk-size CHUNK_SIZE
+                        Sets download chunk size for api. Default=512b
+  --record-beatmaps     Whether to save beatmaps to database or not.
+  --lookup-in-database  Whether to search for beatmaps to download from
+                        accumulated database.
+  -d, --debug           Sets debug in printer. Default=False
+
+Get Beatmaps Params:
+  -s DATETIME, --since DATETIME
+                        Add get beatmaps param since given date. Supported
+                        formats: YYYY-MM-DD, YYYY/MM/DD, DD-MM-YY, DD/MM/YY
+  -m MODE, --mode MODE, --game-mode MODE
+                        Add get beatmaps param for game mode. Modes: 0 = osu!,
+                        1 = Taiko, 2 = CtB, 3 = osu!mania
+  -l LIMIT, --limit LIMIT
+                        Adds limit to return beatmaps count. Default=500
+
+Download Params:
+  -nv, --no-video       Whether to download beatmapset with video or not.
+
+Download Filters:
+  -a QUALIFICATION, -q QUALIFICATION, --approved QUALIFICATION, --qualification QUALIFICATION
+                        Adds beatmaps filter to specified approved. To add
+                        multiple qualifications, stack it like: '-q 0 -q 1
+                        ...'. Qualifications: 4 = loved, 3 = qualified, 2 =
+                        approved, 1 = ranked, 0 = pending, -1 = WIP, -2 =
+                        graveyard
+  --diff RATING, --difficulty RATING, --difficulty-rating RATING
+                        Adds beatmaps filter for range or exact match on
+                        difficultyrating. Ratings will be converted to floats.
+                        Rating formats: [x.xx] or [x] and [x.xx-y.yy]
+  -f FAVOURITE_COUNT, --favourite FAVOURITE_COUNT
+                        Adds beatmaps filter for minimum favourite count on
+                        the beatmapset.
+  -r RATING, --rating RATING
+                        Adds beatmaps filter for minimum rating on the
+                        beatmapset.
+
 ```
 
 ## Development
