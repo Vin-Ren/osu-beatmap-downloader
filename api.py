@@ -82,13 +82,13 @@ class osuAPI:
                             {'Url':url, 'Params': params, 'Status Code': resp.status_code})
         return resp
     
-    def download(self, beatmap: Beatmap, pipe_handler: io.BytesIO, retry=False):
+    def download(self, beatmap: Beatmap, pipe_handler: io.BytesIO, params={}, retry=False):
         beatmapset_url = Url.formattable_beatmapset.format(beatmap)
         beatmapset_download_url = Url.formattable_beatmapset_download.format(beatmap)
         
         headers = {'referer': beatmapset_url}
         
-        with self.session.get(url=beatmapset_download_url, headers=headers, allow_redirects=True, stream=True) as download_stream:
+        with self.session.get(url=beatmapset_download_url, params=params, headers=headers, allow_redirects=True, stream=True) as download_stream:
             start_time = time.time()
             # progress = 0
             max_progress = int(download_stream.headers['Content-Length'])
@@ -112,7 +112,7 @@ class osuAPI:
         if retry:
             return self.download(beatmap, pipe_handler, retry)
 
-    def download_to_file(self, beatmap: Beatmap, filename: str = None):
+    def download_to_file(self, beatmap: Beatmap, filename: str = None, params={}):
         filename = (filename or self.config.formattable_beatmap_filename).format(beatmap)
         filename = filename if filename.endswith(BEATMAPSET_EXTENSION) else filename+BEATMAPSET_EXTENSION
         filename = remove_illegal_name_characters(filename)
@@ -121,7 +121,7 @@ class osuAPI:
         
         success = False
         with open(filepath+TEMPORARY_FILE_SUFFIX, 'wb') as file_handler:
-            success = self.download(beatmap, file_handler)
+            success = self.download(beatmap, file_handler, params=params)
             file_handler.flush()
         if success:
             try:
