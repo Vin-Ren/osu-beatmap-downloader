@@ -106,6 +106,7 @@ class Model(metaclass=ModelMeta):
                 if field.default is None:
                     raise KeyError("'{}' is required but not found in data.".format(field.name))
                 entry_data[field.name] = field.get_default_value()
+        return entry_data
         
     def make_insert_args(self, replace=False, ignore=False):
         query = self.make_insert_query()
