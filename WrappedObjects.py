@@ -65,4 +65,6 @@ class Beatmap(BaseOsuObject):
 class User(BaseOsuObject):
     REQUIRED_FIELDS = ['user_id', 'username', 'join_date', 'level', 'pp_raw']
     def __repr__(self):
-        return "<{} object id={} username={} level={} pp={}>".format(self.__class__.__name__, self.user_id, self.username, round(self.level), self.pp_raw)
+        return "<{} object id={} username={} level={} pp={}>".format(self.__class__.__name__, self.user_id, self.username, round(float(self.level)), round(float(self.pp_raw)))
+    def __str__(self):
+        return "User#{0[user_id]} {0[username]}".format(self)

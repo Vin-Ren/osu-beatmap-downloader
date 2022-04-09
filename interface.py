@@ -2,7 +2,7 @@ import sys
 from argparse import ArgumentParser
 
 from WrappedObjects import ObjectifiedDict, Config, Credential, Beatmap
-from utils import NULL, PrettyPrinter, inquire_params, get_date_from_string, load_json, remove_duplicate_in_list
+from utils import NULL, PrettyPrinter, inquire_params, get_date_from_string, dump_json, remove_duplicate_in_list
 
 from DBManager import osuDB, MultiThreadedOsuDB
 from api import osuAPI
@@ -18,7 +18,7 @@ class Interface:
         self.printer: PrettyPrinter = PrettyPrinter._get_default()
         self.printer.debug = self.config.debug
         
-        self._actions = {'DOWNLOAD':self.cli_downloader}
+        self._actions = {'DOWNLOAD':self.cli_downloader, 'INTERACTIVE':self.cli_interactive, NULL:self.cli_interactive}
         
         self.parsed_args = {}
         self.params = {}
@@ -28,9 +28,10 @@ class Interface:
     def initialized(self):
         return self.api._logged_in
     
-    def _init(self):
-        self.db._init()
-        self.api._init()
+    def _init(self, force=False):
+        if not self.initialized | force:
+            self.db._init()
+            self.api._init()
 
     def process_filter(self, filter_arg_entry):
         processors = {'approved': lambda lst:(lambda lst:lambda q: q in lst)(','.join(lst)),
@@ -62,7 +63,7 @@ class Interface:
     def start(self, args: list = sys.argv[1:]):
         parser = ArgumentParser(description="This is the cli interface for osu-map-downloader.")
         
-        parser.add_argument("action", metavar='ACTION', type=str.upper, choices=self._actions, help="Action to do.")
+        parser.add_argument("action", metavar='ACTION', type=str.upper, choices=self._actions, default=NULL, nargs='?', help="Action to do.")
         
         configs = parser.add_argument_group('Configurations')
         configs.add_argument('--download-directory', metavar='DIRECTORY', dest='config_download_directory', default=NULL, help="Sets download directory for api. Default='./Downloads'")
@@ -95,9 +96,7 @@ class Interface:
         return self._actions[namespace.action]()
     
     def cli_downloader(self):
-        if not self.initialized:
-            self._init()
-        
+        self._init()
         
         beatmaps = self.api.get_beatmaps(params=self.params)
         print("Fetched {} Beatmaps from osu api.".format(len(beatmaps)))
@@ -119,8 +118,6 @@ class Interface:
         for i, beatmap in enumerate(filtered_beatmaps):
             print("\nBeatmap #{}".format(i+1))
             print("Processing Beatmap: {}".format(str(beatmap)))
-            self.printer.print_info('Downloading Process#{}'.format(i+1), 
-                                    {'Beatmap Object':repr(beatmap)}, with_header=False)
             if self.db.check_exists_in_downloaded(beatmap):
                 print("Already downloaded, entry found in database.\n")
                 continue
@@ -130,3 +127,35 @@ class Interface:
             self.db.flag_as_downloaded(beatmap)
         
         print("Finished Downloading.")
+    
+    def cli_interactive(self):
+        self._init()
+        
+        print("---OSU BEATMAP DOWNLOADER INTERACTIVE CLI---\n[b]Download beatmaps info\n[d]Download beatmaps\n[u]Download user info")
+        choice = input("Your Choice:").lower()[:1]
+        if choice == 'u':
+            print("-- Download User Info --")
+            params = inquire_params({'u':"Enter user identifier(name/id):", 'm':"Enter game mode(0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania):"})
+            users = self.api.get_users(params)
+            print("\nMatching Users: \n%s" % "\n".join(["#{}. {}".format(i+1, user) for i, user in enumerate(users)]))
+            filename = input("\nEnter filename to save to(json file):") or 'dump.json'
+            filename = filename if filename.endswith('.json') else ("%s.json" % filename)
+            dump_json(users, filename, indent=4)
+            print("Dumped users data to {}.".format(filename))
+        elif choice == 'b':
+            print("-- Download Beatmaps Info --\nAll params below is optional, you can press enter to skip.")
+            params = inquire_params({'since': "Since (format: yyyy-mm-dd):", 'm': "Specific Game Mode (0:Std, 1:Taiko, 2:CtB, 3:Mania):", 'limit': "Limit (result size limit):"})
+            beatmaps = self.api.get_beatmaps(params)
+            print("\nFetched Beatmaps: \n%s" % "\n".join(["#{}. {}".format(i+1, beatmap) for i, beatmap in enumerate(beatmaps)]))
+            filename = input("\nEnter filename to save to(json file):") or 'dump.json'
+            filename = filename if filename.endswith('.json') else ("%s.json" % filename)
+            dump_json(beatmaps, filename, indent=4)
+            print("Dumped beatmaps data to {}.".format(filename))
+        elif choice == 'd':
+            self.start(input("Args Input For CLI Downloader:").split())
+        elif choice == 'x':
+            print("Exiting.")
+        else:
+            print("Invalid Choice.")
+
+        exit(0)

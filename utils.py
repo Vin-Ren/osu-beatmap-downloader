@@ -4,11 +4,11 @@ import json
 import re
 from datetime import datetime
 
-from typing import Dict, List, Union, Any
+from typing import Dict, List, Tuple, Union, Any
 from types import FunctionType
 
 
-__all__ = ['CSRF_TOKEN_REGEX', 'dict_updater', 'remove_illegal_name_characters', 'NULL', 'load_json', 'metric_size_formatter', 'make_progress_bar', 'get_date_from_string', 'inquire_params', 'remove_duplicate_in_list', 'PrettyPrinter']
+__all__ = ['CSRF_TOKEN_REGEX', 'dict_updater', 'remove_illegal_name_characters', 'NULL', 'load_json', 'dump_json', 'metric_size_formatter', 'make_progress_bar', 'get_date_from_string', 'inquire_params', 'remove_duplicate_in_list', 'PrettyPrinter']
 
 CSRF_TOKEN_REGEX = re.compile(r".*?csrf-token.*?content=\"(.*?)\">", re.DOTALL)
 
@@ -19,10 +19,13 @@ NULL_TYPE = type('NULL')
 NULL = NULL_TYPE()
 
 
-def load_json(filename):
-    with open(filename, 'r') as file:
-        return json.load(file)
+def load_json(filename, open_kw: Dict = {}, json_load_kw: Dict = {}):
+    with open(filename, 'r', encoding='utf-8', **open_kw) as file:
+        return json.load(file, **json_load_kw)
 
+def dump_json(obj, filename, indent=4, open_kw: Dict = {}, json_dump_kw: Dict = {}):
+    with open(filename, 'w', encoding='utf-8', **open_kw) as file:
+        json.dump(obj, file, indent=4, **json_dump_kw)
 
 def metric_size_formatter(value: int, suffix: str = 'B', decimal_places: int = 2, divisor: Union[int, float] = 1024.0):
     formattable_str = "{%s:.%sf} {unit}{suffix}" % ('value', decimal_places)

@@ -135,7 +135,7 @@ class osuAPI:
         if resp.ok:
             return [Beatmap(entry) for entry in resp.json()]
     
-    def get_user(self, params: dict):
+    def get_users(self, params: dict):
         resp = self.request(url=Endpoint.get_user, params=params)
         if resp.ok:
             return [User(entry) for entry in resp.json()]

@@ -41,7 +41,7 @@ After configuring the project, You could finally start using it!
 The beatmap downloader can be used in CLI and Interactive mode.
 it will start in CLI mode **if** the interface detects argument, else it will start in Interactive mode.
 
-**NOTE: INTERACTIVE MODE IS NOT YET AVAILABLE IN THIS BRANCH**
+
 ### CLI
 Example:
 ```bash
