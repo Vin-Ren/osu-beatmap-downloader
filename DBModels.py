@@ -109,7 +109,7 @@ class Model(metaclass=ModelMeta):
         return entry_data
         
     def make_insert_args(self, replace=False, ignore=False):
-        query = self.make_insert_query()
+        query = self.__class__.make_insert_query()
         values = self.make_insert_values()
         return (query, values)
 

@@ -98,7 +98,7 @@ class osuAPI:
                     break
                 pipe_handler.write(chunk)
                 elapsed_time = time.time()-start_time+0.001 # +1ms, prevent div by 0 error
-                suffix = " | {curr} of {max}\t{speed} ({elapsed_time}s)"
+                suffix = " | {curr} of {max}    {speed} ({elapsed_time}s)"
                 suffix = suffix.format(curr=metric_size_formatter(pipe_handler.tell()), max=metric_size_formatter(max_progress), 
                                        speed=metric_size_formatter(round(pipe_handler.tell()/elapsed_time, 2), suffix='bps'), elapsed_time=round(elapsed_time,2))
                 print(make_progress_bar(pipe_handler.tell(), length=self.config.download_progress_bar_length, vmax=max_progress, suffix=suffix), end=' '*5)
@@ -106,7 +106,7 @@ class osuAPI:
         
         printer.print_debug('Download Process', 
                             {'Beatmap Info':beatmap, 'Download Url':beatmapset_download_url, 'Beatmapset Url': beatmapset_url, 
-                             'Target File Stream': repr(pipe_handler), 'Status Code': download_stream.status_code})
+                             'Target File Stream': repr(pipe_handler), 'Params': params, 'Status Code': download_stream.status_code})
         if download_stream.ok:
             return True
         if retry:

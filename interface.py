@@ -93,11 +93,11 @@ class Interface:
         self.parsed_args = ObjectifiedDict(vars(namespace))
         self.process_args()
         
+        self.printer.debug = self.config.debug
         self.printer.print_debug("Interface.start Process", 
                                  {'Action': namespace.action, 'Params': self.params, 'Download Params': self.download_params, 'Debug': self.config.debug, 
                                   'Namespace': namespace, 'Filter Conditions': self.filters},
                                  header_prefix='|>|')
-        self.printer.debug = self.config.debug
         
         return self._actions[namespace.action]()
     
