@@ -131,31 +131,32 @@ class Interface:
     def cli_interactive(self):
         self._init()
         
-        print("---OSU BEATMAP DOWNLOADER INTERACTIVE CLI---\n[b]Download beatmaps info\n[d]Download beatmaps\n[u]Download user info")
-        choice = input("Your Choice:").lower()[:1]
-        if choice == 'u':
-            print("-- Download User Info --")
-            params = inquire_params({'u':"Enter user identifier(name/id):", 'm':"Enter game mode(0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania):"})
-            users = self.api.get_users(params)
-            print("\nMatching Users: \n%s" % "\n".join(["#{}. {}".format(i+1, user) for i, user in enumerate(users)]))
-            filename = input("\nEnter filename to save to(json file):") or 'dump.json'
-            filename = filename if filename.endswith('.json') else ("%s.json" % filename)
-            dump_json(users, filename, indent=4)
-            print("Dumped users data to {}.".format(filename))
-        elif choice == 'b':
-            print("-- Download Beatmaps Info --\nAll params below is optional, you can press enter to skip.")
-            params = inquire_params({'since': "Since (format: yyyy-mm-dd):", 'm': "Specific Game Mode (0:Std, 1:Taiko, 2:CtB, 3:Mania):", 'limit': "Limit (result size limit):"})
-            beatmaps = self.api.get_beatmaps(params)
-            print("\nFetched Beatmaps: \n%s" % "\n".join(["#{}. {}".format(i+1, beatmap) for i, beatmap in enumerate(beatmaps)]))
-            filename = input("\nEnter filename to save to(json file):") or 'dump.json'
-            filename = filename if filename.endswith('.json') else ("%s.json" % filename)
-            dump_json(beatmaps, filename, indent=4)
-            print("Dumped beatmaps data to {}.".format(filename))
-        elif choice == 'd':
-            self.start(input("Args Input For CLI Downloader:").split())
-        elif choice == 'x':
-            print("Exiting.")
-        else:
-            print("Invalid Choice.")
+        while 1:
+            print("---OSU BEATMAP DOWNLOADER INTERACTIVE CLI---\n[u]Download user info\n[b]Download beatmaps info\n[d]Download beatmaps\n[x]Exit")
+            choice = input("Your Choice:").lower()[:1]
+            if choice == 'u':
+                print("-- Download User Info --")
+                params = inquire_params({'u':"Enter user identifier(name/id):", 'm':"Enter game mode(0 = osu!, 1 = Taiko, 2 = CtB, 3 = osu!mania):"})
+                users = self.api.get_users(params)
+                print("\nMatching Users: \n%s" % "\n".join(["#{}. {}".format(i+1, user) for i, user in enumerate(users)]))
+                filename = input("\nEnter filename to save to(json file):") or 'dump.json'
+                filename = filename if filename.endswith('.json') else ("%s.json" % filename)
+                dump_json(users, filename, indent=4)
+                print("Dumped users data to {}.".format(filename))
+            elif choice == 'b':
+                print("-- Download Beatmaps Info --\nAll params below is optional, you can press enter to skip.")
+                params = inquire_params({'since': "Since (format: yyyy-mm-dd):", 'm': "Specific Game Mode (0:Std, 1:Taiko, 2:CtB, 3:Mania):", 'limit': "Limit (result size limit):"})
+                beatmaps = self.api.get_beatmaps(params)
+                print("\nFetched Beatmaps: \n%s" % "\n".join(["#{}. {}".format(i+1, beatmap) for i, beatmap in enumerate(beatmaps)]))
+                filename = input("\nEnter filename to save to(json file):") or 'dump.json'
+                filename = filename if filename.endswith('.json') else ("%s.json" % filename)
+                dump_json(beatmaps, filename, indent=4)
+                print("Dumped beatmaps data to {}.".format(filename))
+            elif choice == 'd':
+                self.start(input("Args Input For CLI Downloader:").split())
+            elif choice == 'x':
+                print("Exiting.")
+                exit(0)
+            else:
+                print("Invalid Choice.\n")
 
-        exit(0)
