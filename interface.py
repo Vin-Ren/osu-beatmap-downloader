@@ -30,7 +30,7 @@ class Interface:
         return self.api._logged_in
     
     def _init(self, force=False):
-        if not self.initialized | force:
+        if ~self.initialized | force:
             self.db._init()
             self.api._init()
 

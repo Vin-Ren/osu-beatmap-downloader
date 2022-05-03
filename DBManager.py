@@ -121,8 +121,9 @@ class CursorTask:
 class CursorProxy:
     def __init__(self, database:str, cursor: sqlite3.Cursor = None):
         self.database = database
-        self.connection = None
-        self.cursor = cursor
+        self.connection: sqlite3.Connection = None
+        self.cursor: sqlite3.Cursor = cursor
+        self.proxy_connection: sqlite3.Connection = None
         self.proxy_cursor: sqlite3.Cursor = None
         self.daemon: Thread = Thread(target=self.run_queued_task, name='CursorProxy Daemon Thread', daemon=True)
         self.queue: Queue = Queue()
@@ -142,11 +143,8 @@ class CursorProxy:
         try:
             return super().__getattribute__(_name)
         except AttributeError:
-            try:
-                return self._proxy_map.get(_name, self.cursor.__getattribute__(_name))
-            except AttributeError:
-                return self.proxy
-                # raise AttributeError('\'{}\' is not found in this object.'.format(_name))
+            return self._proxy_map.get(_name, self.make_proxy(_name))
+            # raise AttributeError('\'{}\' is not found in this object.'.format(_name))
 
     def __call__(self, *args: Any, **kwds: Any):
         return self.cursor.__call__(*args, **kwds)
@@ -156,15 +154,21 @@ class CursorProxy:
 
     def run_queued_task(self):
         try:
-            self.proxy_cursor = sqlite3.connect(self.database)
+            self.proxy_connection = sqlite3.connect(self.database)
+            self.proxy_cursor = self.proxy_connection.cursor()
             while True:
                 task: CursorTask = self.queue.get(True)
-                self.proxy_cursor.cursor.__getattribute__(task.target_method)(*task.args, **task.kwargs)
+                self.proxy_cursor.__getattribute__(task.target_method)(*task.args, **task.kwargs)
         finally:
             self.proxy_cursor.close()
     
     def enqueue_task(self, method_name: str, args: Tuple, kwargs: Dict):
         return self.queue.put(CursorTask(method_name, args, kwargs))
+
+    def make_proxy(self, method_name: str):
+        def prxy(*args, **kwargs):
+            return self.proxy(method_name, *args, **kwargs)
+        return prxy
 
     def proxy(self, method_name: str, *args, immediate: bool = False, **kwargs):
         if immediate:

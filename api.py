@@ -75,7 +75,7 @@ class osuAPI:
         url = url if url.startswith(BASE_URL) else BASE_URL+(url if url.startswith('/') else '/{}'.format(url))
         params.update({'k': self.api_key})
         
-        resp = self.session.get(url=url, params=params)
+        resp = self.session.get(url=url, params=params, **kw)
         self._cached_last_resp['request'] = resp
         
         printer.print_debug('Request Process', 
